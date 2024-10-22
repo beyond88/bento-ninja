@@ -1,0 +1,59 @@
+.bento-grid-layout {
+    margin-left: auto;
+    margin-right: auto;
+
+    .bento-grid-content {
+        display: grid;
+        width: 100%;
+
+        // Basic grid item styles
+        > .wp-block {
+            margin: 0;
+        }
+
+        // Image fill styles
+        &.is-image-fill {
+            img {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+            }
+        }
+    }
+
+    // Alignment styles
+    &.alignwide {
+        max-width: var(--wp--style--global--wide-size);
+    }
+
+    &.alignfull {
+        max-width: 100%;
+    }
+
+    // Vertical alignment
+    &.is-vertically-aligned-top {
+        align-items: start;
+    }
+
+    &.is-vertically-aligned-center {
+        align-items: center;
+    }
+
+    &.is-vertically-aligned-bottom {
+        align-items: end;
+    }
+
+    // Mobile stacking
+    @media (max-width: 781px) {
+        &.is-stacked-on-mobile {
+            .bento-grid-content {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    }
+}
+
+// Editor specific styles
+.wp-block-create-block-bento-ninja {
+    border: 1px dashed #ccc;
+}
