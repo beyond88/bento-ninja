@@ -1,13 +1,14 @@
-.wp-block-create-block-bento-ninja {
-    .bento-grid {
-        border: 1px dashed #ccc;
-    }
+.bento-grid {
+    width: 100%;
+}
 
-    .block-editor-inner-blocks {
-        width: 100%;
-    }
+.bento-grid-column {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-    .wp-block-group {
-        margin: 0;
-    }
+.add-column-button {
+    margin-top: 20px;
 }

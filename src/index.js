@@ -17,9 +17,9 @@ import './style.scss';
 /**
  * Internal dependencies
  */
-import metadata from './block.json';
 import Edit from './edit';
 import save from './save';
+import metadata from './block.json';
 
 /**
  * Every block starts by registering a new block type definition.

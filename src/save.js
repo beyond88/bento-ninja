@@ -1,33 +1,24 @@
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 export default function save({ attributes }) {
-    const {
-        align,
-        mediaWidth,
-        isStackedOnMobile,
-        verticalAlignment,
-        imageFill,
-    } = attributes;
+    const { gridColumns } = attributes;
 
     const blockProps = useBlockProps.save({
-        className: `bento-grid-layout${align ? ` align${align}` : ''}${
-            isStackedOnMobile ? ' is-stacked-on-mobile' : ''
-        }${verticalAlignment ? ` is-vertically-aligned-${verticalAlignment}` : ''}${
-            imageFill ? ' is-image-fill' : ''
-        }`,
+        className: `bento-layout`,
+        style: {
+            display: 'grid',
+            gridTemplateColumns: `repeat(${gridColumns || 4}, 1fr)`,
+            gap: '20px'
+        }
     });
 
     return (
         <div {...blockProps}>
-            <div 
-                className="bento-grid-content"
-                style={{
-                    gridTemplateColumns: `repeat(auto-fit, minmax(${mediaWidth}%, 1fr))`,
-                    gap: '20px'
-                }}
-            >
-                <InnerBlocks.Content />
-            </div>
+            {[...Array(gridColumns || 4)].map((_, index) => (
+                <div key={index} className="bento-grid-column">
+                    <InnerBlocks.Content />
+                </div>
+            ))}
         </div>
     );
 }

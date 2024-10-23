@@ -4,120 +4,29 @@
   "name": "create-block/bento-ninja",
   "version": "0.1.0",
   "title": "Bento Ninja",
-  "category": "widgets",
-  "icon": "smiley",
-  "description": "Bento Ninja is a stuning block to create bento layout easily.",
-  "example": {},
+  "category": "layout",
+  "icon": "grid-view",
+  "description": "Bento Ninja is a stunning block to create bento layout easily.",
   "attributes": {
     "align": {
       "type": "string",
       "default": "none"
     },
-    "mediaAlt": {
-      "type": "string",
-      "source": "attribute",
-      "selector": "figure img",
-      "attribute": "alt",
-      "default": "",
-      "__experimentalRole": "content"
-    },
-    "mediaPosition": {
-      "type": "string",
-      "default": "left"
-    },
-    "mediaId": {
+    "gridColumns": {
       "type": "number",
-      "__experimentalRole": "content"
-    },
-    "mediaUrl": {
-      "type": "string",
-      "source": "attribute",
-      "selector": "figure video,figure img",
-      "attribute": "src",
-      "__experimentalRole": "content"
-    },
-    "mediaLink": {
-      "type": "string"
-    },
-    "linkDestination": {
-      "type": "string"
-    },
-    "linkTarget": {
-      "type": "string",
-      "source": "attribute",
-      "selector": "figure a",
-      "attribute": "target"
-    },
-    "href": {
-      "type": "string",
-      "source": "attribute",
-      "selector": "figure a",
-      "attribute": "href",
-      "__experimentalRole": "content"
-    },
-    "rel": {
-      "type": "string",
-      "source": "attribute",
-      "selector": "figure a",
-      "attribute": "rel"
-    },
-    "linkClass": {
-      "type": "string",
-      "source": "attribute",
-      "selector": "figure a",
-      "attribute": "class"
-    },
-    "mediaType": {
-      "type": "string",
-      "__experimentalRole": "content"
-    },
-    "mediaWidth": {
-      "type": "number",
-      "default": 50
-    },
-    "mediaSizeSlug": {
-      "type": "string"
-    },
-    "isStackedOnMobile": {
-      "type": "boolean",
-      "default": true
-    },
-    "verticalAlignment": {
-      "type": "string"
-    },
-    "imageFill": {
-      "type": "boolean"
-    },
-    "focalPoint": {
-      "type": "object"
-    },
-    "allowedBlocks": {
-      "type": "array"
-    },
-    "useFeaturedImage": {
-      "type": "boolean",
-      "default": false
+      "default": 4
     }
   },
-  "usesContext": [
-    "postId",
-    "postType"
-  ],
   "supports": {
     "anchor": true,
     "align": [
       "wide",
       "full"
     ],
-    "html": false,
     "color": {
       "gradients": true,
       "heading": true,
-      "link": true,
-      "__experimentalDefaultControls": {
-        "background": true,
-        "text": true
-      }
+      "link": true
     },
     "spacing": {
       "margin": true,
@@ -125,24 +34,11 @@
     },
     "typography": {
       "fontSize": true,
-      "lineHeight": true,
-      "__experimentalFontFamily": true,
-      "__experimentalFontWeight": true,
-      "__experimentalFontStyle": true,
-      "__experimentalTextTransform": true,
-      "__experimentalTextDecoration": true,
-      "__experimentalLetterSpacing": true,
-      "__experimentalDefaultControls": {
-        "fontSize": true
-      }
-    },
-    "interactivity": {
-      "clientNavigation": true
+      "lineHeight": true
     }
   },
   "textdomain": "bento-ninja",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
-  "style": "file:./style-index.css",
-  "viewScript": "file:./view.js"
+  "style": "file:./style-index.css"
 }

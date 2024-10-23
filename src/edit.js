@@ -1,47 +1,67 @@
-import { __ } from '@wordpress/i18n';
 import {
-    useBlockProps,
+    BlockAlignmentToolbar,
+    BlockControls,
     InnerBlocks,
     InspectorControls,
-    MediaUpload,
-    MediaUploadCheck,
-    BlockControls,
-    BlockAlignmentToolbar,
+    useBlockProps,
 } from '@wordpress/block-editor';
-import {
-    PanelBody,
-    RangeControl,
-    ToggleControl,
-    SelectControl,
-    Button,
-} from '@wordpress/components';
-
+import { Button, PanelBody, RangeControl } from '@wordpress/components';
+import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import './editor.scss';
 
 export default function Edit({ attributes, setAttributes }) {
-    const {
-        align,
-        mediaId,
-        mediaUrl,
-        mediaType,
-        mediaWidth,
-        isStackedOnMobile,
-        verticalAlignment,
-        imageFill,
-    } = attributes;
-
+    const { align, gridColumns } = attributes;
     const blockProps = useBlockProps({
-        className: `bento-grid-layout${align ? ` align${align}` : ''}${
-            isStackedOnMobile ? ' is-stacked-on-mobile' : ''
-        }${verticalAlignment ? ` is-vertically-aligned-${verticalAlignment}` : ''}`,
+        className: `bento-layout ${align ? `align${align}` : ''}`,
     });
 
-    const ALLOWED_BLOCKS = ['core/image', 'core/heading', 'core/paragraph', 'core/buttons'];
+    // Initialize columns with unique keys and store the number of columns in state
+    const [columns, setColumns] = useState(
+        new Array(gridColumns || 4).fill(null).map((_, index) => ({
+            id: Math.random().toString(36).substr(2, 9),
+            hasTemplate: index === 0, // Only the first column has the template
+        }))
+    );
+
+    const ALLOWED_BLOCKS = ['core/image', 'core/heading', 'core/paragraph', 'core/button'];
     const TEMPLATE = [
         ['core/image', {}],
-        ['core/heading', { level: 3, placeholder: __('Enter heading...', 'bento-ninja') }],
+        ['core/heading', { placeholder: __('Enter heading...', 'bento-ninja') }],
         ['core/paragraph', { placeholder: __('Enter content...', 'bento-ninja') }],
     ];
+
+    // Update columns when gridColumns changes
+    useEffect(() => {
+        const updatedColumns = [...columns];
+        if (gridColumns > columns.length) {
+            for (let i = columns.length; i < gridColumns; i++) {
+                updatedColumns.push({
+                    id: Math.random().toString(36).substr(2, 9),
+                    hasTemplate: i === 0, // Ensure only the first column has a template
+                });
+            }
+        } else {
+            updatedColumns.splice(gridColumns);
+        }
+        setColumns(updatedColumns);
+    }, [gridColumns]);
+
+    const onAddColumn = () => {
+        setColumns((prevColumns) => [
+            ...prevColumns,
+            {
+                id: Math.random().toString(36).substr(2, 9),
+                hasTemplate: false,
+            },
+        ]);
+    };
+
+    const onRemoveColumn = (indexToRemove) => {
+        setColumns((prevColumns) =>
+            prevColumns.filter((_, index) => index !== indexToRemove)
+        );
+    };
 
     return (
         <>
@@ -55,48 +75,44 @@ export default function Edit({ attributes, setAttributes }) {
             <InspectorControls>
                 <PanelBody title={__('Grid Settings', 'bento-ninja')}>
                     <RangeControl
-                        label={__('Media Width %', 'bento-ninja')}
-                        value={mediaWidth}
-                        onChange={(newWidth) => setAttributes({ mediaWidth: newWidth })}
-                        min={10}
-                        max={90}
-                    />
-                    <ToggleControl
-                        label={__('Stack on mobile', 'bento-ninja')}
-                        checked={isStackedOnMobile}
-                        onChange={(value) => setAttributes({ isStackedOnMobile: value })}
-                    />
-                    <SelectControl
-                        label={__('Vertical Alignment', 'bento-ninja')}
-                        value={verticalAlignment}
-                        options={[
-                            { label: __('Top', 'bento-ninja'), value: 'top' },
-                            { label: __('Center', 'bento-ninja'), value: 'center' },
-                            { label: __('Bottom', 'bento-ninja'), value: 'bottom' },
-                        ]}
-                        onChange={(value) => setAttributes({ verticalAlignment: value })}
-                    />
-                    <ToggleControl
-                        label={__('Image Fill', 'bento-ninja')}
-                        checked={imageFill}
-                        onChange={(value) => setAttributes({ imageFill: value })}
+                        label={__('Number of Columns', 'bento-ninja')}
+                        value={columns.length}
+                        onChange={(newColumns) => {
+                            setAttributes({ gridColumns: newColumns });
+                        }}
+                        min={1}
+                        max={6}
                     />
                 </PanelBody>
             </InspectorControls>
 
-            <div {...blockProps}>
-                <div 
-                    className="bento-grid-content"
-                    style={{
-                        gridTemplateColumns: `repeat(auto-fit, minmax(${mediaWidth}%, 1fr))`,
-                        gap: '20px'
-                    }}
-                >
-                    <InnerBlocks
-                        allowedBlocks={ALLOWED_BLOCKS}
-                        template={TEMPLATE}
-                        templateLock={false}
-                    />
+            <div {...blockProps} style={{ display: 'grid', gridTemplateColumns: `repeat(${columns.length}, 1fr)`, gap: '20px' }}>
+                {columns.map((column, index) => (
+                    <div key={column.id} className="bento-grid-column">
+                        <InnerBlocks
+                            template={column.hasTemplate ? TEMPLATE : []} // Only apply template to the first column
+                            templateLock={false}
+                            allowedBlocks={ALLOWED_BLOCKS}
+                            renderAppender={InnerBlocks.ButtonBlockAppender}
+                        />
+
+                        {columns.length > 1 && (
+                            <Button
+                                variant="secondary"
+                                className="remove-column-button"
+                                onClick={() => onRemoveColumn(index)}
+                            >
+                                {__('Remove Column', 'bento-ninja')}
+                            </Button>
+                        )}
+                    </div>
+                ))}
+
+                {/* Add Column Button */}
+                <div className="add-column-button">
+                    <Button variant="primary" onClick={onAddColumn}>
+                        {__('Add Column', 'bento-ninja')}
+                    </Button>
                 </div>
             </div>
         </>

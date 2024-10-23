@@ -1,59 +1,32 @@
-.bento-grid-layout {
-    margin-left: auto;
-    margin-right: auto;
+.bento-layout {
+    display: grid;
+    gap: 20px;
+}
 
-    .bento-grid-content {
-        display: grid;
+.bento-grid-column {
+    border: 2px solid #ccc;
+    padding: 20px;
+    background-color: #f9f9f9;
+    position: relative;
+
+    .add-block-button {
+        margin-top: 20px;
+        display: block;
         width: 100%;
-
-        // Basic grid item styles
-        > .wp-block {
-            margin: 0;
-        }
-
-        // Image fill styles
-        &.is-image-fill {
-            img {
-                height: 100%;
-                width: 100%;
-                object-fit: cover;
-            }
-        }
     }
 
-    // Alignment styles
-    &.alignwide {
-        max-width: var(--wp--style--global--wide-size);
-    }
-
-    &.alignfull {
-        max-width: 100%;
-    }
-
-    // Vertical alignment
-    &.is-vertically-aligned-top {
-        align-items: start;
-    }
-
-    &.is-vertically-aligned-center {
-        align-items: center;
-    }
-
-    &.is-vertically-aligned-bottom {
-        align-items: end;
-    }
-
-    // Mobile stacking
-    @media (max-width: 781px) {
-        &.is-stacked-on-mobile {
-            .bento-grid-content {
-                grid-template-columns: 1fr !important;
-            }
-        }
+    .remove-column-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: red;
+        color: white;
+        padding: 5px 10px;
+        cursor: pointer;
     }
 }
 
-// Editor specific styles
-.wp-block-create-block-bento-ninja {
-    border: 1px dashed #ccc;
+.add-column-button {
+    grid-column: span 1;
+    align-self: center;
 }

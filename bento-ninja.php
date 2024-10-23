@@ -19,9 +19,9 @@
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html 
  */
 
- defined('ABSPATH') || exit;
+defined('ABSPATH') || exit;
 
- final class Bento_Ninja {
+final class Bento_Ninja {
 
     /**
      * Plugin version
@@ -62,12 +62,11 @@
     private function __construct() {
 
         $this->define_constants();
-
+		$this->load_dependency();
         register_activation_hook( __FILE__, [ $this, 'activate' ] );
         register_deactivation_hook( __FILE__, [ $this, 'deactivate' ] );
-
-        add_action( 'plugins_loaded', [ $this, 'init_plugin' ] );
-
+        add_action( 'plugins_loaded', [ $this, 'on_plugins_loaded' ] );
+		add_action( 'bentoninja_loaded', [ $this, 'init_plugin' ] );
     }
 
     /**
@@ -160,12 +159,40 @@
      * @return void
      */
     public function define_constants() {
-        $this->define( 'BNINJA_PLUGIN_VERSION', $this->version );
+        $this->define( 'BNINJA_VERSION', $this->version );
+        $this->define( 'BNINJA_PLUGIN_SLUG', 'bento-ninja' );
+        $this->define( 'BNINJA_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+		$this->define( 'BNINJA_ROOT_URL', plugin_dir_url( __FILE__ ) );
+		$this->define( 'BNINJA_ROOT_DIR_PATH', plugin_dir_path( __FILE__ ) );
         $this->define( 'BNINJA_FILE', __FILE__ );
         $this->define( 'BNINJA_DIR', __DIR__ );
         $this->define( 'BNINJA_SRC_DIR', __DIR__ . '/src' );
-        $this->define( 'BNINJA_PLUGIN_ASSEST', plugins_url( 'assets', __FILE__ ) );
+        $this->define( 'BNINJA_ASSEST_URL', plugins_url( 'assets', __FILE__ ) );
+		$this->define( 'BNINJA_ASSETS_PATH', BNINJA_ROOT_DIR_PATH . 'assets/' );
+		$this->define( 'BNINJA_INCLUDES_DIR_PATH', BNINJA_ROOT_DIR_PATH . 'includes/' );
+		$this->define( 'BNINJA_BLOCKS_DIR_PATH', BNINJA_ROOT_DIR_PATH . 'includes/blocks/' );
     }
+
+    /**
+     * Loads the required dependencies for the plugin.
+     *
+     * @return void
+     */
+	public function load_dependency() {
+		require_once BNINJA_INCLUDES_DIR_PATH . 'autoload.php';
+	}
+
+    /**
+	 * When WP has loaded all plugins, trigger the `bentoninja_loaded` hook.
+	 *
+	 * This ensures `bentoninja_loaded` is called only after all other plugins
+	 * are loaded, to avoid issues caused by plugin directory naming changing
+	 *
+	 * @since 1.0.0
+	 */
+	public function on_plugins_loaded() {
+		do_action( 'bentoninja_loaded' );
+	}
 
     /**
      * Define constant if not already defined
@@ -191,7 +218,6 @@
     public function init_plugin() {
         $this->includes();
         $this->init_hooks();
-
     }
 
     /**
@@ -202,10 +228,6 @@
     public function init_hooks() {
         // Localize our plugin
         add_action( 'init', [ $this, 'localization_setup' ] );
-
-        // initialize the classes
-        add_action( 'init', [ $this, 'init_blocks' ], PHP_INT_MAX );
-
     }
 
     /**
@@ -214,15 +236,7 @@
      * @return void
      */
     public function includes() {
-    }
-
-    /**
-     * Init all the classes
-     *
-     * @return void
-     */
-    public function init_blocks() {
-        register_block_type( BNINJA_DIR . '/build' );
+        BentoNinja\Blocks::init();
     }
 
 }
