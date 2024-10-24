@@ -1,7 +1,7 @@
 {
     "apiVersion": 2,
-    "name": "fresh-bento/social-media",
-    "title": "Fresh Bento Social Media",
+    "name": "bento-ninja/social-media",
+    "title": "Bento Ninja Social",
     "category": "design",
     "icon": "share",
     "description": "Add social media profile blocks with customizable layouts",
@@ -9,7 +9,7 @@
         "html": false,
         "align": ["wide", "full"]
     },
-    "textdomain": "fresh-bento-social",
+    "textdomain": "bento-ninja-social",
     "editorScript": "file:./build/index.js",
     "editorStyle": "file:./build/index.css",
     "style": "file:./build/style-index.css"

@@ -261,12 +261,12 @@ add_action('init', 'fresh_bento_social_block_init');
 
 function fresh_bento_social_block_editor_assets() {
     wp_enqueue_script(
-        'fresh-bento-social-editor',
+        'bento-ninja-social-editor',
         plugins_url('build/index.js', __FILE__),
         array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components')
     );
     wp_enqueue_style(
-        'fresh-bento-social-editor-style',
+        'bento-ninja-social-editor-style',
         plugins_url('build/index.css', __FILE__),
         array()
     );

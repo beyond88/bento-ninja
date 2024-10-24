@@ -1,7 +1,7 @@
 {
-    "name": "fresh-bento-social-block",
+    "name": "bento-ninja-social-block",
     "version": "1.0.0",
-    "description": "Fresh Bento Social Media Block for WordPress",
+    "description": "Bento Ninja Social Block for WordPress",
     "scripts": {
         "build": "wp-scripts build",
         "start": "wp-scripts start"
