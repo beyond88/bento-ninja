@@ -1,24 +1,25 @@
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { SOCIAL_COLORS } from './constants';
 
-export default function save({ attributes }) {
-    const { gridColumns } = attributes;
+export default function Save({ attributes }) {
+    const { platform } = attributes;
+    const blockProps = useBlockProps.save();
 
-    const blockProps = useBlockProps.save({
-        className: `bento-layout`,
-        style: {
-            display: 'grid',
-            gridTemplateColumns: `repeat(${gridColumns || 4}, 1fr)`,
-            gap: '20px'
-        }
-    });
+    const blockStyle = {
+        backgroundColor: SOCIAL_COLORS[platform] || SOCIAL_COLORS.twitter,
+        padding: '20px',
+        borderRadius: '8px',
+        margin: '0 auto',
+        color: '#ffffff'  // Default text color white
+    };
 
     return (
         <div {...blockProps}>
-            {[...Array(gridColumns || 4)].map((_, index) => (
-                <div key={index} className="bento-grid-column">
+            <div style={blockStyle}>
+                <div>
                     <InnerBlocks.Content />
                 </div>
-            ))}
+            </div>
         </div>
     );
 }

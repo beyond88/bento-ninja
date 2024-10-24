@@ -1,14 +1,9 @@
-.bento-grid {
-    width: 100%;
-}
+.wp-block-fresh-bento-social-media {
+    margin-bottom: 2em;
 
-.bento-grid-column {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.add-column-button {
-    margin-top: 20px;
+    .block-appender {
+        width: 100%;
+        justify-content: center;
+        margin-top: 1em;
+    }
 }

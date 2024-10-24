@@ -1,120 +1,70 @@
 import {
-    BlockAlignmentToolbar,
-    BlockControls,
     InnerBlocks,
     InspectorControls,
-    useBlockProps,
+    RichText,
+    useBlockProps
 } from '@wordpress/block-editor';
-import { Button, PanelBody, RangeControl } from '@wordpress/components';
-import { useEffect, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import {
+    PanelBody,
+    SelectControl,
+} from '@wordpress/components';
+import { useState } from '@wordpress/element';
+import { SOCIAL_COLORS } from './constants';
 import './editor.scss';
 
 export default function Edit({ attributes, setAttributes }) {
-    const { align, gridColumns } = attributes;
-    const blockProps = useBlockProps({
-        className: `bento-layout ${align ? `align${align}` : ''}`,
-    });
+    const blockProps = useBlockProps();
+    const { platform } = attributes;
 
-    // Initialize columns with unique keys and store the number of columns in state
-    const [columns, setColumns] = useState(
-        new Array(gridColumns || 4).fill(null).map((_, index) => ({
-            id: Math.random().toString(36).substr(2, 9),
-            hasTemplate: index === 0, // Only the first column has the template
-        }))
-    );
-
-    const ALLOWED_BLOCKS = ['core/image', 'core/heading', 'core/paragraph', 'core/button'];
-    const TEMPLATE = [
-        ['core/image', {}],
-        ['core/heading', { placeholder: __('Enter heading...', 'bento-ninja') }],
-        ['core/paragraph', { placeholder: __('Enter content...', 'bento-ninja') }],
-    ];
-
-    // Update columns when gridColumns changes
-    useEffect(() => {
-        const updatedColumns = [...columns];
-        if (gridColumns > columns.length) {
-            for (let i = columns.length; i < gridColumns; i++) {
-                updatedColumns.push({
-                    id: Math.random().toString(36).substr(2, 9),
-                    hasTemplate: i === 0, // Ensure only the first column has a template
-                });
-            }
-        } else {
-            updatedColumns.splice(gridColumns);
-        }
-        setColumns(updatedColumns);
-    }, [gridColumns]);
-
-    const onAddColumn = () => {
-        setColumns((prevColumns) => [
-            ...prevColumns,
-            {
-                id: Math.random().toString(36).substr(2, 9),
-                hasTemplate: false,
-            },
-        ]);
+    const blockStyle = {
+        backgroundColor: SOCIAL_COLORS[platform] || SOCIAL_COLORS.twitter,
+        padding: '20px',
+        borderRadius: '8px',
+        margin: '0 auto',
+        color: '#ffffff'  // Default text color white
     };
 
-    const onRemoveColumn = (indexToRemove) => {
-        setColumns((prevColumns) =>
-            prevColumns.filter((_, index) => index !== indexToRemove)
-        );
-    };
+    const [showDefaultText, setShowDefaultText] = useState(true);
+    const dynamicText = `Social Media Block: ${platform.charAt(0).toUpperCase() + platform.slice(1)}`;
 
     return (
-        <>
-            <BlockControls>
-                <BlockAlignmentToolbar
-                    value={align}
-                    onChange={(newAlign) => setAttributes({ align: newAlign })}
-                />
-            </BlockControls>
-
+        <div {...blockProps}>
             <InspectorControls>
-                <PanelBody title={__('Grid Settings', 'bento-ninja')}>
-                    <RangeControl
-                        label={__('Number of Columns', 'bento-ninja')}
-                        value={columns.length}
-                        onChange={(newColumns) => {
-                            setAttributes({ gridColumns: newColumns });
-                        }}
-                        min={1}
-                        max={6}
+                <PanelBody title="Block Settings">
+                    <SelectControl
+                        label="Social Platform"
+                        value={platform}
+                        options={Object.keys(SOCIAL_COLORS).map((key) => ({
+                            label: key.charAt(0).toUpperCase() + key.slice(1),
+                            value: key
+                        }))}
+                        onChange={(value) => setAttributes({ platform: value })}
                     />
                 </PanelBody>
             </InspectorControls>
 
-            <div {...blockProps} style={{ display: 'grid', gridTemplateColumns: `repeat(${columns.length}, 1fr)`, gap: '20px' }}>
-                {columns.map((column, index) => (
-                    <div key={column.id} className="bento-grid-column">
-                        <InnerBlocks
-                            template={column.hasTemplate ? TEMPLATE : []} // Only apply template to the first column
-                            templateLock={false}
-                            allowedBlocks={ALLOWED_BLOCKS}
-                            renderAppender={InnerBlocks.ButtonBlockAppender}
-                        />
+            <div style={blockStyle}>
+                {/* Conditionally show the default text */}
+                {showDefaultText && (
+                    <RichText
+                        tagName="p"
+                        value={dynamicText}
+                        onChange={(newValue) => {
+                            if (newValue === '') {
+                                setShowDefaultText(false); // Hide text if removed
+                            }
+                        }}
+                        placeholder="Social Media Block text"
+                        style={{ textAlign: 'center', marginBottom: '20px' }}
+                    />
+                )}
 
-                        {columns.length > 1 && (
-                            <Button
-                                variant="secondary"
-                                className="remove-column-button"
-                                onClick={() => onRemoveColumn(index)}
-                            >
-                                {__('Remove Column', 'bento-ninja')}
-                            </Button>
-                        )}
-                    </div>
-                ))}
-
-                {/* Add Column Button */}
-                <div className="add-column-button">
-                    <Button variant="primary" onClick={onAddColumn}>
-                        {__('Add Column', 'bento-ninja')}
-                    </Button>
+                <div>
+                    <InnerBlocks
+                        templateLock={false} // No initial blocks and all blocks are allowed
+                    />
                 </div>
             </div>
-        </>
+        </div>
     );
 }

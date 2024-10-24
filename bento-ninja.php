@@ -252,3 +252,23 @@ function bento_ninja() { // phpcs:ignore
 
 // Lets Go....
 bento_ninja();
+
+
+function fresh_bento_social_block_init() {
+    register_block_type(__DIR__ . '/build');
+}
+add_action('init', 'fresh_bento_social_block_init');
+
+function fresh_bento_social_block_editor_assets() {
+    wp_enqueue_script(
+        'fresh-bento-social-editor',
+        plugins_url('build/index.js', __FILE__),
+        array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components')
+    );
+    wp_enqueue_style(
+        'fresh-bento-social-editor-style',
+        plugins_url('build/index.css', __FILE__),
+        array()
+    );
+}
+add_action('enqueue_block_editor_assets', 'fresh_bento_social_block_editor_assets');
